@@ -1,6 +1,6 @@
 <!-- eslint-disable -->
 <template>
-  <div class="flex">
+  <div class="flex h-screen">
     <div
       class="w-[400px] h-screen flex flex-col justify-between bg-white py-[50px]"
     >
@@ -16,7 +16,7 @@
             <h2 class="text-xl font-bold text-[#DB44C9]">Logged in</h2>
           </div>
         </div>
-        <div class="mt-28 px-5 space-y-5">
+        <div class="mt-20 px-5 space-y-5">
           <router-link
             v-for="(item, idx) in sideLinks"
             :key="idx"

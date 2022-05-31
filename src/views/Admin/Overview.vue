@@ -22,16 +22,26 @@
         </div>
       </div>
     </div>
+    <div class="mt-24 table_overview">
+        <Table_Overview />
+    </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
+import Table_Overview from '../../components/Table_Overview.vue';
 export default {
   name: "overview",
-  components: {},
+  components: { Table_Overview },
 };
 </script>
 <!-- eslint-disable -->
 
-<style></style>
+<style scoped>
+.table_overview {
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+}
+</style>
