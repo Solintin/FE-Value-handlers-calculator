@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Index from "../views/Admin/index.vue";
+import Rate from "../views/Admin/rate.vue";
 import Overview from "../views/Admin/overview.vue";
 import Users from "../views/Admin/users.vue";
 import Calculator from "../views/Admin/calculator.vue";
-import Rate from "../views/Admin/rate.vue";
 
 const routes = [
   {
