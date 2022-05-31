@@ -65,7 +65,7 @@ import { ref } from "vue";
 import Table_Rate from "../../components/Table_Rate.vue";
 import Table_Tariff from "../../components/Table_Tariff.vue";
 export default {
-  name: "overview",
+  name: "rate",
   components: { Table_Rate, Table_Tariff },
   setup() {
     //Data - tate
