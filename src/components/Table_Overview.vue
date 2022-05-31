@@ -45,9 +45,7 @@
     </div>
   </div>
 </template>
-
 <!-- eslint-disable -->
-
 <script>
 import { ref } from "vue";
 export default {
