@@ -1,12 +1,12 @@
 <!-- eslint-disable -->
 <template>
-  <div>Users</div>
+  <div>Rate</div>
 </template>
 <!-- eslint-disable -->
 
 <script>
 export default {
-  name: "users",
+  name: "rate",
   components: {},
 };
 </script>

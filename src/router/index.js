@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/login.vue";
-import Overview from "../views/Admin/Overview.vue";
-import Users from "../views/Admin/Users.vue";
-import Calculator from "../views/Admin/Calculator.vue";
+import Index from "../views/Admin/index.vue";
+import Overview from "../views/Admin/overview.vue";
+import Users from "../views/Admin/users.vue";
+import Calculator from "../views/Admin/calculator.vue";
+import Rate from "../views/Admin/rate.vue";
 
 const routes = [
   {
@@ -12,12 +14,12 @@ const routes = [
   },
   {
     path: "/:id",
-    name: "Overview",
-    component: Overview,
-    children :[
+    name: "Admin",
+    component: Index,
+    children: [
       {
         path: "users",
-        name: "Users",
+        name: "users",
         component: Users,
       },
       {
@@ -25,7 +27,17 @@ const routes = [
         name: "calculator",
         component: Calculator,
       },
-    ]
+      {
+        path: "rate",
+        name: "rate",
+        component: Rate,
+      },
+      {
+        path: "overview",
+        name: "overview",
+        component: Overview,
+      },
+    ],
   },
   // {
   //   path: "/about",
