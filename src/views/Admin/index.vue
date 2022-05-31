@@ -33,15 +33,15 @@
           </router-link>
         </div>
       </div>
-      <div
-        class="flex items-center transform duration-500 transition-all font-bold text-lg rounded-md 
-        hover:bg-[#DB44C990] hover:text-[#ffffffdb] mx-5 px-5 py-2 cursor-pointer"
+      <router-link
+        to="/"
+        class="flex items-center transform duration-500 transition-all font-bold text-lg rounded-md hover:bg-[#DB44C990] hover:text-[#ffffffdb] mx-5 px-5 py-2 cursor-pointer"
       >
         <span class="w-2/12">
           <i class="fa-solid fa-arrow-right-from-bracket"></i
         ></span>
         <div class="w-10/12">Logout</div>
-      </div>
+      </router-link>
     </div>
     <div class="w-full overflow-y-auto bg-[#E5E5E5]">
       <router-view></router-view>
@@ -68,7 +68,6 @@ export default {
         name: "Current Rate/Tarrif",
         link: "/admin/rate",
         icon: "fa-solid fa-file-invoice-dollar",
-        
       },
       {
         name: "User Management",
