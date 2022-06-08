@@ -44,7 +44,7 @@
       </router-link>
     </div>
     <div class="w-full overflow-y-auto bg-[#E5E5E5]">
-      
+
       <router-view></router-view>
     </div>
   </div>
@@ -56,7 +56,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 
 export default {
-  name: "Admin",
+  name: "admin",
   setup(props) {
     const router = useRoute();
     const sideBarContent = [
