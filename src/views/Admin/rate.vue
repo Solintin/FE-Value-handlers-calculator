@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="flex space-x-5">
+      <div class="flex items-center space-x-5">
         <h1>Last Update: 24/09/2020</h1>
 
         <button

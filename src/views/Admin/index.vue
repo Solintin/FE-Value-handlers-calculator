@@ -44,6 +44,7 @@
       </router-link>
     </div>
     <div class="w-full overflow-y-auto bg-[#E5E5E5]">
+      
       <router-view></router-view>
     </div>
   </div>
