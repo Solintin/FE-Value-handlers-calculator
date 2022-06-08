@@ -30,7 +30,7 @@
 <!-- eslint-disable -->
 
 <script>
-import Table_Users from '../../components/Table_Users.vue';
+import Table_Users from '../components/Table_Users.vue';
 export default {
   name: "users",
   components: { Table_Users },

@@ -36,8 +36,8 @@
 
 <script>
 import { ref } from "vue";
-import Guide from "../../components/Guide.vue";
-import Calculator from "../../components/MainCalculator.vue";
+import Guide from "../components/Guide.vue";
+import Calculator from "../components/MainCalculator.vue";
 export default {
   name: "calculator-app",
   components: { Guide, Calculator },
