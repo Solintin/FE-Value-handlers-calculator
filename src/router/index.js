@@ -19,7 +19,7 @@ const routes = [
     component: Register,
   },
   {
-    path: "/Dashboard",
+    path: "/admin",
     name: "admin",
     component: Index,
     children: [
