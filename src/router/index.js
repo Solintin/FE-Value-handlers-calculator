@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "@/views/login.vue";
 import Register from "@/views/register.vue";
-import Index from "@/views/Admin/index.vue";
-import Rate from "@/views/Admin/rate.vue";
-import Overview from "@/views/overview.vue";
-import Users from "@/views/users.vue";
-import Calculator from "@/views/calculator.vue";
+import Index from "@/views/Dashboard/index.vue";
+import Rate from "@/views/Dashboard/rate.vue";
+import Overview from "@/views/Dashboard/overview.vue";
+import Users from "@/views/Dashboard/users.vue";
+import Calculator from "@/views/Dashboard/calculator.vue";
 
 const routes = [
   {
@@ -19,7 +19,7 @@ const routes = [
     component: Register,
   },
   {
-    path: "/admin",
+    path: "/Dashboard",
     name: "admin",
     component: Index,
     children: [

@@ -3,7 +3,7 @@
   <div class="py-[50px] px-[70px]">
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-[#515352]">Registered Users</h1>
+        <h1 class="text-2xl font-bold text-[#515352]">Recent Calculations</h1>
       </div>
 
       <div
@@ -23,17 +23,17 @@
       </div>
     </div>
     <div class="mt-24 table_overview">
-        <Table_Users />
+        <Table_Overview />
     </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Table_Users from '../components/Table_Users.vue';
+import Table_Overview from '../../components/Table_Overview.vue';
 export default {
-  name: "users",
-  components: { Table_Users },
+  name: "overview",
+  components: { Table_Overview },
 };
 </script>
 <!-- eslint-disable -->
