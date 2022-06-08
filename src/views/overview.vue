@@ -30,7 +30,7 @@
 <!-- eslint-disable -->
 
 <script>
-import Table_Overview from '../../components/Table_Overview.vue';
+import Table_Overview from '../components/Table_Overview.vue';
 export default {
   name: "overview",
   components: { Table_Overview },
