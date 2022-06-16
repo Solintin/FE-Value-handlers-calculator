@@ -20,8 +20,16 @@
             <input
               type="email"
               name="email"
+              v-model.trim="state.email"
               class="bg-transparent w-full border-none outline-none flex-1 p-3 mr-1"
             />
+          </div>
+          <div
+            class="input-errors"
+            v-for="error in v$.email.$errors"
+            :key="error.$uid"
+          >
+            <div class="text-red-500 font-bold">{{ error.$message }}</div>
           </div>
 
           <h1>Password</h1>
@@ -36,8 +44,16 @@
             <input
               type="password"
               name="password"
+              v-model.trim="state.password"
               class="bg-transparent w-full border-none outline-none flex-1 p-3 mr-1"
             />
+          </div>
+          <div
+            class="input-errors"
+            v-for="error of v$.password.$errors"
+            :key="error.$uid"
+          >
+            <div class="text-red-500 font-bold">{{ error.$message }}</div>
           </div>
 
           <div class="mt-5 flex justify-between items-start">
@@ -46,22 +62,20 @@
               <h2 class="font-bold text-sm">Remember Me</h2>
             </div>
             <div>
-              <router-link
-                to="/forgot_password"
-                class="text-gray-500 font-medium text-sm"
+              <router-link to="#" class="text-gray-500 font-medium text-sm"
                 >Forgot Password?</router-link
               >
             </div>
           </div>
 
-          <router-link
-            to="/admin/overview"
+          <button
+            @click="submitForm"
             class="flex justify-center items-center space-x-3 bg-[#B659A2] text-white px-8 py-3 rounded-md w-full mt-10"
           >
             <span class="font-bold text-xl">Login</span>
 
             <i class="fa-solid fa-arrow-right-long text-white text-xl mt-1"></i>
-          </router-link>
+          </button>
           <div
             class="text-base font-medium mt-5 flex justify-center items-start space-x-5"
           >
@@ -78,7 +92,37 @@
 <!-- eslint-disable -->
 
 <script>
-export default {};
+import { reactive } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
+import useVuelidate from "@vuelidate/core";
+import { required, email } from "@vuelidate/validators";
+import router from "@/router";
+
+export default {
+  setup() {
+    const state = reactive({
+      password: "",
+      email: "",
+    });
+    const rules = {
+      password: { required }, // Matches state.lastName
+      email: { required, email }, // Matches state.contact.email
+    };
+
+    const v$ = useVuelidate(rules, state);
+
+    const submitForm = () => {
+      v$.value.$validate(); // checks all inputs
+      if (!v$.value.$error) {
+        // if ANY fail validation
+        alert("Form successfully submitted.");
+        router.push("/admin/overview");
+      } else {
+        alert("Form failed validation");
+      }
+    };
+    return { state, v$, submitForm };
+  },
+};
 </script>
 <!-- eslint-disable -->
 

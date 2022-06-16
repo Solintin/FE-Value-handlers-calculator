@@ -57,7 +57,7 @@ import { useRoute } from "vue-router";
 
 export default {
   name: "admin",
-  setup(props) {
+  setup() {
     const router = useRoute();
     const sideBarContent = [
       {
@@ -86,9 +86,7 @@ export default {
       return router.path;
     });
 
-    onMounted(() => {
-      console.log(sideLinks.value);
-    });
+   
     return {
       sideLinks,
       currentPath,
