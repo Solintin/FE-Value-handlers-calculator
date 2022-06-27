@@ -23,17 +23,53 @@
       </div>
     </div>
     <div class="mt-24 table_overview">
-        <Table_Overview />
+      <Table_Overview :tableData="calculationsList" :loading="loading" />
     </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Table_Overview from '../../components/Table_Overview.vue';
+import { ref } from "vue";
+import axios from "@/Utils/axios.config.js";
+import { useStore } from "@/store";
+import Table_Overview from "../../components/Table_Overview.vue";
 export default {
   name: "overview",
   components: { Table_Overview },
+  setup() {
+    const { calculationList, calculationsList, setLoading } = useStore();
+    const tableData = ref(undefined);
+    const loading = ref(false);
+    //Created-Like LifeCycle Component in vue 3
+    (async () => {
+      setLoading(true);
+      loading.value = true;
+      console.log(loading.value);
+
+      await axios
+        .get("/api/v1/calculation/")
+        .then((response) => {
+          setLoading(false);
+          loading.value = false;
+          console.log(loading.value);
+          calculationList(response.data);
+          tableData.value = response.data;
+        })
+        .catch((error) => {
+          loading.value = false;
+
+          setLoading(false);
+          console.log(error);
+        });
+    })();
+    console.log(calculationsList);
+    return {
+      tableData,
+      calculationsList,
+      loading,
+    };
+  },
 };
 </script>
 <!-- eslint-disable -->

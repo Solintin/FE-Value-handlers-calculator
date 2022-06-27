@@ -1,4 +1,5 @@
 <!-- eslint-disable -->
+
 <template>
   <div class="py-[50px] px-[70px]">
     <div class="flex justify-between items-center">
@@ -23,17 +24,40 @@
       </div>
     </div>
     <div class="mt-24 table_overview">
-        <Table_Users />
+      <Table_Users :tableData="tableData" />
     </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import Table_Users from '../../components/Table_Users.vue';
+import {ref} from "vue";
+import Table_Users from "../../components/Table_Users.vue";
 export default {
   name: "users",
   components: { Table_Users },
+   setup() {
+    const {  saveUserList, usersList, setLoading } = useStore();
+    const tableData = ref(usersList);
+    //Created-Like LifeCycle Component in vue 3
+    (async () => {
+      setLoading(true);
+      await axios
+        .get("/account/user/")
+        .then((response) => {
+          setLoading(false);
+          console.log(response.data);
+          saveUserList(response.data);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    })();
+    return {
+      tableData,
+    };
+  },
 };
 </script>
 <!-- eslint-disable -->

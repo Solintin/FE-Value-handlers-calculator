@@ -33,18 +33,17 @@
           </router-link>
         </div>
       </div>
-      <router-link
-        to="/"
+      <div
+        @click="logout"
         class="flex items-center transform duration-500 transition-all font-bold text-lg rounded-md hover:bg-[#DB44C990] hover:text-[#ffffffdb] mx-5 px-5 py-2 cursor-pointer"
       >
         <span class="w-2/12">
           <i class="fa-solid fa-arrow-right-from-bracket"></i
         ></span>
         <div class="w-10/12">Logout</div>
-      </router-link>
+      </div>
     </div>
     <div class="w-full overflow-y-auto bg-[#E5E5E5]">
-
       <router-view></router-view>
     </div>
   </div>
@@ -54,11 +53,14 @@
 <script>
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "@/store";
+import router from "@/router";
 
 export default {
   name: "admin",
   setup() {
-    const router = useRoute();
+    const { clearUser } = useStore();
+    const routerInsatance = useRoute();
     const sideBarContent = [
       {
         name: "Overview",
@@ -83,13 +85,16 @@ export default {
     ];
     const sideLinks = ref(sideBarContent);
     const currentPath = computed(() => {
-      return router.path;
+      return routerInsatance.path;
     });
-
-   
+    const logout = () => {
+      clearUser();
+      router.push("/");
+    };
     return {
       sideLinks,
       currentPath,
+      logout,
     };
   },
 };

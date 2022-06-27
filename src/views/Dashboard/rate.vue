@@ -53,15 +53,17 @@
       </div>
     </div>
     <div class="mt-24 table_rate">
-      <Table_Rate v-if="Tab === 'rate'" />
-      <Table_Tariff v-if="Tab === 'tarrif'" />
+      <Table_Rate v-if="Tab === 'rate'" :rateData="rateData" />
+      <Table_Tariff v-if="Tab === 'tarrif'" :tariffData="tariffData" />
     </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import axios from "@/Utils/axios.config.js";
+import { useStore } from "@/store";
 import Table_Rate from "../../components/Table_Rate.vue";
 import Table_Tariff from "../../components/Table_Tariff.vue";
 export default {
@@ -71,13 +73,38 @@ export default {
     //Data - tate
     const Tab = ref("rate");
 
+    const { rateList, ratesList, tariffList, tariffsList, setLoading } =
+      useStore();
+    const tariffData = ref(tariffsList);
+    const rateData = ref(ratesList);
+    //Created-Like LifeCycle Component in vue 3
+    (async () => {
+      setLoading(true);
+
+      try {
+        const [response1, response2] = await Promise.all([
+          axios.get("/api/v1/tariff/"),
+          axios.get("/api/v1/rate/"),
+        ]);
+        tariffList(response1.data);
+        rateList(response2.data);
+        setLoading(false);
+
+      } catch (err) {
+        setLoading(false);
+        console.log(err);
+      }
+    })();
     //Methods
     const switchTab = (currentTab) => {
       Tab.value = currentTab;
     };
+console.log(tariffData.value);
 
     return {
       Tab,
+      tariffData,
+      rateData,
       switchTab,
     };
   },

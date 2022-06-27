@@ -1,7 +1,11 @@
 <!-- eslint-disable -->
 <template>
   <div>
+     <div v-if="isLoading" class="text-2xl text-center">
+      Loading...
+    </div>
     <div
+      v-else
       className="table-wrapper mb-5 w-full rounded-xl shadow-xl border overflow-x-scroll lg:overflow-x-hidden pb-6 "
     >
       <table className="w-full items-center table-auto ">
@@ -25,7 +29,7 @@
           <tr
             v-for="(
               { exchange_rate, currency_name, currency_code }, idx
-            ) in tableData"
+            ) in tableData.results"
             :class="`${
               idx % 2 === 0 ? '' : 'bg-gray-100'
             } text-base font-medium cursor-pointer hover:bg-gray-200`"
@@ -53,94 +57,19 @@
 <!-- eslint-disable -->
 
 <script>
-import { ref } from "vue";
-export default {
-  setup() {
-    const tableData = ref([
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-      {
-        currency_name: "Canada Dollar",
-        currency_code: "AED",
-        exchange_rate: "77707.79",
-      },
-    ]);
+import { computed,  } from "vue";
+import { useStore } from "@/store";
 
+export default {
+  setup({rateData}) {
+    const { loading } = useStore();
+    const isLoading = computed(() => loading); 
+    const tableData = computed(() => rateData); 
+    
+    console.log(tableData);
     return {
       tableData,
+      isLoading,
     };
   },
 };

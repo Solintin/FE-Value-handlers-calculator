@@ -1,7 +1,9 @@
 <!-- eslint-disable -->
 <template>
   <div>
+    <div v-if="calculationsData != undefined" class="text-2xl text-center">Loading...</div>
     <div
+      v-else
       className="table-wrapper mb-5 w-full rounded-xl shadow-xl border overflow-x-scroll lg:overflow-x-hidden pb-6 "
     >
       <table className="w-full items-center table-auto ">
@@ -23,8 +25,12 @@
         </thead>
         <tbody>
           <tr
-            v-for="({ duty, email, description, cost }, idx) in tableData"
-            :class="`${idx % 2 === 0 ? '' : 'bg-gray-100'} text-base font-medium cursor-pointer hover:bg-gray-200`"
+            v-for="(
+              { duty, email, description, cost }, idx
+            ) in calculationsData.results"
+            :class="`${
+              idx % 2 === 0 ? '' : 'bg-gray-100'
+            } text-base font-medium cursor-pointer hover:bg-gray-200`"
             :key="{ idx }"
           >
             <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
@@ -47,134 +53,26 @@
 </template>
 <!-- eslint-disable -->
 <script>
-import { ref } from "vue";
-export default {
-  setup() {
-    const tableData = ref([
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-      {
-        email: "inspiredtalhah@gmail.com",
-        description: "Live Purebred breeding horses",
-        duty: "77707.79",
-        cost: "603853.82",
-      },
-    ]);
+import { computed,toRefs } from "vue";
+import axios from "@/Utils/axios.config.js";
+import { useStore } from "@/store";
 
+export default {
+  props: { tableData: Object, loading : Boolean },
+  setup(props) {
+    const {loadingState, loading, calculationsList } = useStore();
+    const isLoading = computed(()=> loadingState.value);
+    const calculationsData = computed(() => calculationsList);
+
+    // console.log(useStore().loadingState.value);
+    console.log(calculationsData.value);
     return {
-      tableData,
+      calculationsData,
+      isLoading,
     };
   },
 };
 </script>
 <!-- eslint-disable -->
 
-<style scoped>
-
-</style>
+<style scoped></style>

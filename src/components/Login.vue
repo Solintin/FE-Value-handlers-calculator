@@ -71,8 +71,15 @@
           <button
             @click="submitForm"
             class="flex justify-center items-center space-x-3 bg-[#B659A2] text-white px-8 py-3 rounded-md w-full mt-10"
+            :class="isLoading ? 'cursor-not-allowed' : ''"
+            :disabled="isLoading"
           >
-            <span class="font-bold text-xl">Login</span>
+            <div
+              v-if="isLoading"
+              class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed323730] border-l-[#ed323730] animate-spin"
+            ></div>
+
+            <div v-else class="font-bold text-xl">Login In</div>
 
             <i class="fa-solid fa-arrow-right-long text-white text-xl mt-1"></i>
           </button>
@@ -92,35 +99,41 @@
 <!-- eslint-disable -->
 
 <script>
-import { reactive } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
+import { reactive, computed, ref } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
 import useVuelidate from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import router from "@/router";
+import { useStore } from "@/store";
+import { useLogin } from "@/store/auth";
 
 export default {
   setup() {
+    const { loading } = useStore();
+    const isLoading = ref(loading);
     const state = reactive({
       password: "",
       email: "",
     });
-    const rules = {
+    const rules = computed(() => ({
       password: { required }, // Matches state.lastName
       email: { required, email }, // Matches state.contact.email
-    };
+    }));
 
     const v$ = useVuelidate(rules, state);
 
     const submitForm = () => {
       v$.value.$validate(); // checks all inputs
       if (!v$.value.$error) {
-        // if ANY fail validation
-        alert("Form successfully submitted.");
-        router.push("/admin/overview");
+        //Login Logic
+        const credentials = state;
+        console.log(isLoading.value);
+        useLogin(credentials);
+        console.log(isLoading.value);
       } else {
         alert("Form failed validation");
       }
     };
-    return { state, v$, submitForm };
+
+    return { state, isLoading, v$, submitForm };
   },
 };
 </script>
