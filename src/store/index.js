@@ -1,68 +1,73 @@
 /* eslint-disable  */
-// import { createStore } from "vuex";
+import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
-// export default createStore({
-//   state: {},
-//   mutations: {},
-//   actions: {},
-//   modules: {},
-// });
+export default createStore({
+  plugins: [createPersistedState()],
+  state: {
+    usersList: undefined,
+    calculationsList: undefined,
+    ratesList: undefined,
+    tariffsList: undefined,
+    isLoggedIn: false,
+    loading: false,
+    currentUser: null,
+  },
 
-import { useStorage } from "@vueuse/core";
-import {ref} from 'vue'
-import axios from "axios";
-//States..
-export const GlobalState = useStorage("GlobalState", {
-  savedData: [],
-  usersList: undefined,
-  calculationsList: undefined,
-  ratesList: undefined,
-  tariffsList: undefined,
-  isLoggedIn: false,
-  loading: false,
-  currentUser: null,
+  actions: {
+    setUser({ commit }, user) {
+      commit("SET_USER", user);
+    },
+    setUserList({ commit }, items) {
+      commit("SET_USER_LIST", items);
+    },
+    calculationList({ commit }, items) {
+      commit("CALCULATION_LIST", items);
+    },
+    rateList({ commit }, items) {
+      commit("RATE_LIST", items);
+    },
+    tariffList({ commit }, items) {
+      commit("TARIFF_LIST", items);
+    },
+    setLoading({ commit }, loadingState) {
+      commit("SET_LOADING", loadingState);
+    },
+
+    logout({ commit }) {
+      commit("LOGOUT", null);
+    },
+  },
+
+  mutations: {
+    SET_USER(state, user) {
+      state.currentUser = user;
+      state.isLoggedIn = true;
+    },
+    SET_USER_LIST(state, items) {
+      state.usersList = items;
+    },
+    CALCULATION_LIST(state, items) {
+      state.calculationsList = items;
+    },
+    RATE_LIST(state, items) {
+      state.ratesList = items;
+    },
+    TARIFF_LIST(state, items) {
+      state.ratesList = items;
+    },
+    SET_LOADING(state, loadingState) {
+      state.loading = loadingState;
+    },
+    LOGOUT(state) {
+      state.currentUser = null;
+      state.isLoggedIn = false;
+    },
+  },
+  getters: {
+    data: (state) => state,
+  },
+  modules: {},
 });
 
-export const loadingState = ref(GlobalState.value.loading) 
-
 //Action and Mutators
-export const useStore = () => {
-  const saveUser = (user) => {
-    GlobalState.value.currentUser = user;
-    GlobalState.value.isLoggedIn = true;
-  };
-
-  const clearUser = () => {
-    GlobalState.value = {};
-  };
-
-  const saveUserList = (items) => {
-    GlobalState.value.usersList = items;
-  };
-
-  const calculationList = (items) => {
-    GlobalState.value.calculationsList = items;
-  };
-  const rateList = (items) => {
-    GlobalState.value.ratesList = items;
-  };
-  const tariffList = (items) => {
-    GlobalState.value.tarrifsList = items;
-  };
-
-  const setLoading = (state) => {
-    GlobalState.value.loading = state;
-  };
-
-  return {
-    ...GlobalState.value,
-    loadingState,
-    saveUserList,
-    calculationList,
-    rateList,
-    tariffList,
-    saveUser,
-    clearUser,
-    setLoading,
-  };
-};

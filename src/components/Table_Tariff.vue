@@ -1,9 +1,8 @@
 <!-- eslint-disable -->
 <template>
   <div>
-    <div v-if="isLoading" class="text-2xl text-center">
-      Loading...
-    </div>
+      <Loading v-if="loading" />
+
     <div
       v-else
       className="table-wrapper mb-5 w-full rounded-xl shadow-xl border overflow-x-scroll lg:overflow-x-hidden pb-6 "
@@ -11,50 +10,50 @@
       <table className="w-full items-center table-auto ">
         <thead>
           <tr className="font-bold  bg-[#DBEBFF]">
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               HSCODE DESCRIPTION
             </th>
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               HSCODE
             </th>
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               SU
             </th>
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               ID
             </th>
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               VAT
             </th>
-            <th className="px-3 py-5 leading-5 text-center whitespace-nowrap  ">
+            <th className="px-3 py-5 leading-5 text-left whitespace-nowrap  ">
               Edit
             </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="({ su, hscode_description, hscode, id_tariff, vat }, idx) in tableData.results"
+            v-for="({ su, hs_description, hscode, id_tariff, vat }, idx) in tableData.results"
             :class="`${
               idx % 2 === 0 ? '' : 'bg-gray-100'
             } text-base font-medium cursor-pointer hover:bg-gray-200`"
             :key="{ idx }"
           >
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
-              {{ hscode_description }}
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
+              {{ hs_description }}
             </td>
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
               {{ hscode }}
             </td>
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
               {{ su }}
             </td>
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
               {{ id_tariff }}
             </td>
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
               {{ vat }}
             </td>
-            <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
+            <td class="px-3 py-5 leading-5 whitespace-nowrap text-left">
               <i class="fa-solid fa-pen-to-square"></i>
             </td>
           </tr>
@@ -69,18 +68,20 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "vuex";
+import Loading from "./Loading.vue";
 
 export default {
-  setup({tariffData}) {
-    const { loading} = useStore();
-    const isLoading = computed(() => loading);   
-    const tableData = computed(() => tariffData);
-
-console.log(tableData.value);
+  components: { Loading },
+  props: { tariffData: Object, loadng: Boolean },
+  setup(props) {
+    const store = useStore();
+    const loading = computed(() => store.state.loading); 
+    const tableData = computed(() => props.tariffData); 
+    
     return {
       tableData,
-      isLoading,
+      loading,
     };
   },
 };

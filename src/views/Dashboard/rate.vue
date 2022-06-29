@@ -26,7 +26,7 @@
       </div>
 
       <div
-        class="w-[500px] bg-[#ECECEC] rounded-md flex ring-1 ring-[#B659A2CC]"
+        class="w-[500px] hidden bg-[#ECECEC] rounded-md lg:flex ring-1 ring-[#B659A2CC]"
       >
         <input
           type="text"
@@ -42,9 +42,15 @@
       </div>
 
       <div class="flex items-center space-x-5">
-        <h1>Last Update: 24/09/2020</h1>
+        <div v-if="Tab === 'rate'">
+          <h1>Last Update: {{ getRateUpdatedDate }}</h1>
+        </div>
+        <div v-else>
+          <h1>Last Update: {{ getTariffUpdatedDate }}</h1>
+        </div>
 
         <button
+          @click="handleUpdateModal"
           class="flex space-x-3 items-center rounded-full px-4 py-2 text-base font-medium bg-green-600 text-white"
         >
           <span>Update</span>
@@ -56,6 +62,7 @@
       <Table_Rate v-if="Tab === 'rate'" :rateData="rateData" />
       <Table_Tariff v-if="Tab === 'tarrif'" :tariffData="tariffData" />
     </div>
+    <Update v-if="updateModal" :handleUpdateModal="handleUpdateModal" />
   </div>
 </template>
 <!-- eslint-disable -->
@@ -63,35 +70,37 @@
 <script>
 import { computed, ref } from "vue";
 import axios from "@/Utils/axios.config.js";
-import { useStore } from "@/store";
+import { useStore } from "vuex";
 import Table_Rate from "../../components/Table_Rate.vue";
 import Table_Tariff from "../../components/Table_Tariff.vue";
+import Update from "../../components/Update.vue";
 export default {
   name: "rate",
-  components: { Table_Rate, Table_Tariff },
+  components: { Table_Rate, Table_Tariff, Update },
   setup() {
     //Data - tate
+    const store = useStore();
     const Tab = ref("rate");
-
-    const { rateList, ratesList, tariffList, tariffsList, setLoading } =
-      useStore();
-    const tariffData = ref(tariffsList);
-    const rateData = ref(ratesList);
+    const updateModal = ref(false);
+    const { loading } = store.state;
+    const isLoading = computed(() => loading);
+    const tariffData = ref(null);
+    const rateData = ref(null);
     //Created-Like LifeCycle Component in vue 3
     (async () => {
-      setLoading(true);
+      store.dispatch("setLoading", true);
 
       try {
         const [response1, response2] = await Promise.all([
           axios.get("/api/v1/tariff/"),
           axios.get("/api/v1/rate/"),
         ]);
-        tariffList(response1.data);
-        rateList(response2.data);
-        setLoading(false);
+        tariffData.value = response1.data;
+        rateData.value = response2.data;
 
+        store.dispatch("setLoading", false);
       } catch (err) {
-        setLoading(false);
+        store.dispatch("setLoading", false);
         console.log(err);
       }
     })();
@@ -99,13 +108,38 @@ export default {
     const switchTab = (currentTab) => {
       Tab.value = currentTab;
     };
-console.log(tariffData.value);
+
+    const handleUpdateModal = () => {
+      updateModal.value = !updateModal.value;
+    };
+
+    const getRateUpdatedDate = computed(() => {
+      if (rateData.value !== null) {
+        return new Date(
+          rateData.value.results[0].date_uploaded
+        ).toLocaleDateString("en-GB");
+      }
+      return "Loading...";
+    });
+    const getTariffUpdatedDate = computed(() => {
+      if (rateData.value !== null) {
+        return new Date(
+          rateData.value.results[0].date_uploaded
+        ).toLocaleDateString("en-GB");
+      }
+      return "Loading...";
+    });
 
     return {
       Tab,
       tariffData,
       rateData,
+      isLoading,
+      getRateUpdatedDate,
+      getTariffUpdatedDate,
+      updateModal,
       switchTab,
+      handleUpdateModal
     };
   },
 };

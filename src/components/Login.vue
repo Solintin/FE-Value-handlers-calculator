@@ -45,6 +45,7 @@
               type="password"
               name="password"
               v-model.trim="state.password"
+              @keypress.enter="submitForm"
               class="bg-transparent w-full border-none outline-none flex-1 p-3 mr-1"
             />
           </div>
@@ -71,11 +72,11 @@
           <button
             @click="submitForm"
             class="flex justify-center items-center space-x-3 bg-[#B659A2] text-white px-8 py-3 rounded-md w-full mt-10"
-            :class="isLoading ? 'cursor-not-allowed' : ''"
-            :disabled="isLoading"
+            :class="loading ? 'cursor-not-allowed' : ''"
+            :disabled="loading"
           >
             <div
-              v-if="isLoading"
+              v-if="loading"
               class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed323730] border-l-[#ed323730] animate-spin"
             ></div>
 
@@ -98,43 +99,36 @@
 </template>
 <!-- eslint-disable -->
 
-<script>
-import { reactive, computed, ref } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
+<script setup>
+import { reactive, computed } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
 import useVuelidate from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import { useStore } from "@/store";
-import { useLogin } from "@/store/auth";
+import { useStore } from "vuex";
+import { useLogin } from "@/Utils/useAuth";
 
-export default {
-  setup() {
-    const { loading } = useStore();
-    const isLoading = ref(loading);
-    const state = reactive({
-      password: "",
-      email: "",
-    });
-    const rules = computed(() => ({
-      password: { required }, // Matches state.lastName
-      email: { required, email }, // Matches state.contact.email
-    }));
+const store = useStore();
 
-    const v$ = useVuelidate(rules, state);
+const loading = computed(() => store.state.loading);
+const state = reactive({
+  password: "",
+  email: "",
+});
+const rules = computed(() => ({
+  password: { required }, // Matches state.lastName
+  email: { required, email }, // Matches state.contact.email
+}));
 
-    const submitForm = () => {
-      v$.value.$validate(); // checks all inputs
-      if (!v$.value.$error) {
-        //Login Logic
-        const credentials = state;
-        console.log(isLoading.value);
-        useLogin(credentials);
-        console.log(isLoading.value);
-      } else {
-        alert("Form failed validation");
-      }
-    };
+const v$ = useVuelidate(rules, state);
 
-    return { state, isLoading, v$, submitForm };
-  },
+const submitForm = () => {
+  v$.value.$validate(); // checks all inputs
+  if (!v$.value.$error) {
+    //Login Logic
+    const credentials = state;
+    useLogin(credentials, store);
+  } else {
+    alert("Form failed validation");
+  }
 };
 </script>
 <!-- eslint-disable -->

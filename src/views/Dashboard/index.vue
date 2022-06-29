@@ -53,13 +53,13 @@
 <script>
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "@/store";
+import { useStore } from "vuex";
 import router from "@/router";
 
 export default {
   name: "admin",
   setup() {
-    const { clearUser } = useStore();
+    const store = useStore();
     const routerInsatance = useRoute();
     const sideBarContent = [
       {
@@ -88,7 +88,7 @@ export default {
       return routerInsatance.path;
     });
     const logout = () => {
-      clearUser();
+      store.dispatch("logout");
       router.push("/");
     };
     return {

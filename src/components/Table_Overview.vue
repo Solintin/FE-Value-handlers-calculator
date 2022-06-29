@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <template>
   <div>
-    <div v-if="calculationsData != undefined" class="text-2xl text-center">Loading...</div>
+    <Loading v-if="loading" />
     <div
       v-else
       className="table-wrapper mb-5 w-full rounded-xl shadow-xl border overflow-x-scroll lg:overflow-x-hidden pb-6 "
@@ -26,7 +26,7 @@
         <tbody>
           <tr
             v-for="(
-              { duty, email, description, cost }, idx
+              { duty, user, description, cost }, idx
             ) in calculationsData.results"
             :class="`${
               idx % 2 === 0 ? '' : 'bg-gray-100'
@@ -34,7 +34,7 @@
             :key="{ idx }"
           >
             <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
-              {{ email }}
+              {{ user.email }}
             </td>
             <td class="px-3 py-5 leading-5 whitespace-nowrap text-center">
               {{ description }}
@@ -53,22 +53,21 @@
 </template>
 <!-- eslint-disable -->
 <script>
-import { computed,toRefs } from "vue";
-import axios from "@/Utils/axios.config.js";
-import { useStore } from "@/store";
+import { computed } from "vue";
+import { useStore } from "vuex";
+import Loading from "./Loading.vue";
 
 export default {
-  props: { tableData: Object, loading : Boolean },
+  components: { Loading },
+  props: { tableData: Object, loadng: Boolean },
   setup(props) {
-    const {loadingState, loading, calculationsList } = useStore();
-    const isLoading = computed(()=> loadingState.value);
-    const calculationsData = computed(() => calculationsList);
+    const store = useStore();
+    const loading = computed(() => store.state.loading);
+    const calculationsData = computed(() => props.tableData);
 
-    // console.log(useStore().loadingState.value);
-    console.log(calculationsData.value);
     return {
       calculationsData,
-      isLoading,
+      loading,
     };
   },
 };

@@ -1,9 +1,8 @@
 <!-- eslint-disable -->
 <template>
   <div>
-     <div v-if="isLoading" class="text-2xl text-center">
-      Loading...
-    </div>
+      <Loading v-if="loading" />
+
     <div
       v-else
       className="table-wrapper mb-5 w-full rounded-xl shadow-xl border overflow-x-scroll lg:overflow-x-hidden pb-6 "
@@ -58,22 +57,23 @@
 
 <script>
 import { computed,  } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "vuex";
+import Loading from "./Loading.vue";
 
 export default {
-  setup({rateData}) {
-    const { loading } = useStore();
-    const isLoading = computed(() => loading); 
-    const tableData = computed(() => rateData); 
+  components: { Loading },
+  props: { rateData: Object, loadng: Boolean },
+  setup(props) {
+    const store = useStore();
+    const loading = computed(() => store.state.loading); 
+    const tableData = computed(() => props.rateData); 
     
-    console.log(tableData);
     return {
       tableData,
-      isLoading,
+      loading,
     };
   },
 };
 </script>
 <!-- eslint-disable -->
 
-<style scoped></style>

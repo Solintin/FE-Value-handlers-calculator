@@ -83,16 +83,15 @@
           <button
             @click="submitForm"
             class="flex justify-center items-center space-x-3 bg-[#B659A2] text-white px-8 py-3 rounded-md w-full mt-10"
-            :class="isLoading ? 'cursor-not-allowed' : ''"
-            :disabled="isLoading"
+            :class="loading ? 'cursor-not-allowed' : ''"
+            :disabled="loading"
           >
             <div
-              v-if="isLoading"
+              v-if="loading"
               class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed323730] border-l-[#ed323730] animate-spin"
             ></div>
 
             <div v-else class="font-bold text-xl">Sign Up</div>
-
           </button>
           <div
             class="text-base font-medium mt-5 flex justify-center items-start space-x-5"
@@ -116,15 +115,15 @@
 import { reactive, computed, ref } from "vue"; // "from '@vue/composition-api'" if you are using Vue 2.x
 import useVuelidate from "@vuelidate/core";
 import { sameAs, required, email, minLength } from "@vuelidate/validators";
-import { useStore } from "@/store";
-import { useRegister } from "@/store/auth";
+import { useStore } from "vuex";
+import { useRegister } from "@/Utils/useAuth";
 
 export default {
   name: "signup",
   setup() {
     //Page Data
-    const { loading } = useStore();  
-    const isLoading = computed(() => loading)
+    const store = useStore();
+    const loading = computed(() => store.state.loading);
     const state = reactive({
       password: {
         password: "",
@@ -142,7 +141,7 @@ export default {
       email: { required, email }, // Matches state.contact.email
     }));
 
-//====METHODS=====
+    //====METHODS=====
     const v$ = useVuelidate(rules, state);
 
     const submitForm = () => {
@@ -154,12 +153,12 @@ export default {
           email: state.email,
           user_type: state.user_type,
           password: state.password.password,
-        });
+        }, store);
       } else {
         alert("Form failed validation");
       }
     };
-    return { state, isLoading, v$, submitForm };
+    return { state, loading, v$, submitForm };
   },
 };
 </script>

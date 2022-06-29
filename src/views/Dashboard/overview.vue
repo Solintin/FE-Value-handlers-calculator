@@ -23,51 +23,43 @@
       </div>
     </div>
     <div class="mt-24 table_overview">
-      <Table_Overview :tableData="calculationsList" :loading="loading" />
+      <Table_Overview :tableData="tableData" :loading="isLoading" />
     </div>
   </div>
 </template>
 <!-- eslint-disable -->
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "@/Utils/axios.config.js";
-import { useStore } from "@/store";
+import { useStore } from "vuex";
 import Table_Overview from "../../components/Table_Overview.vue";
 export default {
   name: "overview",
   components: { Table_Overview },
   setup() {
-    const { calculationList, calculationsList, setLoading } = useStore();
-    const tableData = ref(undefined);
-    const loading = ref(false);
+    const store = useStore();
+    const { loading } = store.state;
+    const isLoading = computed(() => loading);
+    const tableData = ref(null);
     //Created-Like LifeCycle Component in vue 3
     (async () => {
-      setLoading(true);
-      loading.value = true;
-      console.log(loading.value);
+      store.dispatch("setLoading", true);
 
       await axios
         .get("/api/v1/calculation/")
         .then((response) => {
-          setLoading(false);
-          loading.value = false;
-          console.log(loading.value);
-          calculationList(response.data);
+          store.dispatch("setLoading", false);
+          // calculationList(response.data);
           tableData.value = response.data;
         })
         .catch((error) => {
-          loading.value = false;
-
-          setLoading(false);
-          console.log(error);
+          store.dispatch("setLoading", false);
         });
     })();
-    console.log(calculationsList);
     return {
       tableData,
-      calculationsList,
-      loading,
+      isLoading,
     };
   },
 };

@@ -31,27 +31,30 @@
 <!-- eslint-disable -->
 
 <script>
-import {ref} from "vue";
+import { ref } from "vue";
 import Table_Users from "../../components/Table_Users.vue";
+import { useStore } from "vuex";
+import axios from "@/Utils/axios.config.js";
+
 export default {
   name: "users",
   components: { Table_Users },
-   setup() {
-    const {  saveUserList, usersList, setLoading } = useStore();
-    const tableData = ref(usersList);
+  setup() {
+    const store = useStore();
+    const tableData = ref(null);
     //Created-Like LifeCycle Component in vue 3
     (async () => {
-      setLoading(true);
+      store.dispatch("setLoading", true);
+
       await axios
         .get("/account/user/")
         .then((response) => {
-          setLoading(false);
-          console.log(response.data);
-          saveUserList(response.data);
+          store.dispatch("setLoading", false);
+          // calculationList(response.data);
+          tableData.value = response.data;
         })
         .catch((error) => {
-          setLoading(false);
-          console.log(error);
+          store.dispatch("setLoading", false);
         });
     })();
     return {
