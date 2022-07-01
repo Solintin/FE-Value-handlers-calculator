@@ -3,6 +3,9 @@
 <template>
   <div class="layout">
     <div class="update_box space-y-8">
+      <h1 class="text-xl font-medium text-center">
+         {{ currentTab.toUpperCase() }}
+      </h1>
       <h1 class="text-xl font-medium">
         Select The File To Be Uploaded From Your Computer
       </h1>
@@ -31,8 +34,14 @@
         </label>
       </div>
 
+      <div style="width: 100%" v-if="uploading">
+        <LvProgressBar :value="uploadProgressPercent" color="#38b2ac" />
+      </div>
+      <div class="text-center text-green-800">{{ success_message }}</div>
+
       <div class="flex item-center space-x-5 justify-center py-2">
         <button
+          @click="upload"
           :disabled="fileUpdate == null"
           :class="
             fileUpdate == null
@@ -56,16 +65,58 @@
 <!-- eslint-disable -->
 
 <script setup>
+import LvProgressBar from "lightvue/progress-bar";
 import { ref, computed } from "vue";
+import axios from "@/Utils/axios.config.js";
+
+// import the component
+// Register the component locally
+
 const props = defineProps({
   handleUpdateModal: Function,
+  currentTab: String,
 });
 const handleUpdateModal = computed(() => props.handleUpdateModal);
+const currentTab = computed(() => props.currentTab);
+const success_message = ref("");
 const fileName = ref("Choose a file to upload....");
 const fileUpdate = ref(null);
+const uploadProgressPercent = ref(0);
+const uploading = ref(false);
 const handleImageUpload = (event) => {
   fileName.value = event.target.files[0].name;
   fileUpdate.value = event.target.files[0];
+};
+
+const options = {
+  onUploadProgress: (progressEvent) => {
+    const { loaded, total } = progressEvent;
+    uploadProgressPercent.value = Math.floor((loaded * 100) / total);
+  },
+};
+const upload = async () => {
+  let formData = new FormData();
+  formData.append("file_upload", fileUpdate.value);
+  if (currentTab.value == "rate") {
+    uploading.value = true;
+    try {
+      await axios.post("/api/v1/rate/", formData, options).then((res) => {
+        success_message.value = res.data.detail;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    uploading.value = true;
+
+    try {
+      await axios.post("/api/v1/tariff/", formData, options).then((res) => {
+        success_message.value = res.data.detail;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 </script>
 <!-- eslint-disable -->

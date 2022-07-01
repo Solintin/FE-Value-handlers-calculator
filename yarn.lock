@@ -5876,6 +5876,11 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lightvue@^1.4.9:
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/lightvue/-/lightvue-1.4.9.tgz#9200745fba6df6b3dae129a94ca27df28d70b67c"
+  integrity sha512-qCS0LG5ejWwyKI7283Xfiwq/q8SdtR/d96AQFnkrLWgZchauUOvnEChNnzhHsFaA+KGNvpDYUW48COknSzjdrg==
+
 lilconfig@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.5.tgz#19e57fd06ccc3848fd1891655b5a447092225b25"

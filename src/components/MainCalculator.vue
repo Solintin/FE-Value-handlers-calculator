@@ -5,7 +5,7 @@
       <h1 class="my-2 text-center text-[#B659A2] text-2xl font-bold">
         Duty Calculator
       </h1>
-      <div class="my-3 grid grid-cols-2 gap-6">
+      <div class="my-3 grid md:grid-cols-2 gap-6">
         <div>
           <label for="hscode" class="font-medium text-base">HS-CODE</label>
           <div
@@ -39,7 +39,7 @@
                   @click="setHscode(item)"
                   class="p-4 mt-1 bg-gray-100 hover:bg-gray-300"
                 >
-                  {{ item.code }}
+                  {{ item.hscode }}
                 </div>
               </div>
               <div v-else class="p-4 mt-1 bg-gray-100 hover:bg-gray-300">
@@ -83,7 +83,7 @@
                   @click="setHscode(item)"
                   class="p-4 mt-1 bg-gray-100 hover:bg-gray-300"
                 >
-                  {{ item.description }}
+                  {{ item.hs_description }}
                 </div>
               </div>
               <div v-else class="p-4 mt-1 bg-gray-100 hover:bg-gray-300">
@@ -108,7 +108,7 @@
       </div>
 
       <div class="mt-6 border-t-2 border-[#ECD0E9] w-full py-4 space-y-4">
-        <div class="my-3 grid grid-cols-2 gap-6">
+        <div class="my-3 grid md:grid-cols-2 gap-6">
           <div>
             <label for="hscode" class="font-medium text-base uppercase"
               >Currency</label
@@ -122,7 +122,7 @@
                   @focus="setShowCurrency('focus')"
                   placeholder="Click to select currency"
                   class="text-xl truncate outline-none w-full bg-transparent"
-                  v-model="selectedCurrency.currency_name"
+                  v-model="selectedCurrency.currency_code"
                 />
                 <button
                   @click="setShowCurrency"
@@ -143,7 +143,7 @@
                     @click="setCurrency(item)"
                     class="p-4 mt-1 bg-gray-100 hover:bg-gray-300"
                   >
-                    {{ item }}
+                    {{ item.currency_code }}
                   </div>
                 </div>
                 <div v-else class="p-4 mt-1 bg-gray-100 hover:bg-gray-300">
@@ -166,7 +166,7 @@
                         ? 'bg-red-300'
                         : 'bg-gray-200'
                     "
-                    class="cursor-pointer w-14 h-8 rounded-[25px] p-1 transform transition-all duration-300"
+                    class="cursor-pointer w-12 h-6 rounded-[25px] p-1 transform transition-all duration-300"
                   >
                     <div
                       @click="handleInsuranceType"
@@ -175,16 +175,16 @@
                           ? ' bg-pink-500'
                           : 'translate-x-6 bg-gray-600'
                       "
-                      class="transform transition-all duration-300 w-6 h-6 rounded-full"
+                      class="transform transition-all duration-300 w-4 h-4 rounded-full"
                     ></div>
                   </div>
                 </div>
 
                 <div
-                  title="Switch between insurance value or insurance percentage"
+                  title="Switch between insurance actual value or insurance percentage"
                   class="pr-2"
                 >
-                  <i class="fa fa-info-circle text-3xl" aria-hidden="true"></i>
+                  <i class="fa fa-info-circle text-2xl" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
@@ -198,7 +198,7 @@
           </div>
         </div>
 
-        <div class="my-3 grid grid-cols-2 gap-6">
+        <div class="my-3 grid md:grid-cols-2 gap-6">
           <div>
             <label for="hscode" class="font-medium text-base uppercase"
               >FOB</label
@@ -229,80 +229,61 @@
 
       <div class="my-10 flex justify-center">
         <button
-          class="bg-[#B659A2] text-white px-8 py-3 rounded-md max-w-max font-medium uppercase text-base"
+          @click="handleCalculation"
+          class="bg-[#B659A2] text-white px-8 py-3 flex justify-center rounded-md max-w-max font-medium uppercase text-base"
+          :class="loading ? 'cursor-not-allowed' : ''"
+          :disabled="loading"
         >
-          Calculate
+          <div
+            v-if="loading"
+            class="h-6 w-6 rounded-full border-4 border-t-[#fff] border-r-[#fff] border-b-[#ed323730] border-l-[#ed323730] animate-spin"
+          ></div>
+
+          <div v-else class="font-bold text-xl">Calculate</div>
         </button>
       </div>
     </div>
+    <Result v-if="showResult" :setShowResult="setShowResult" :result="result" />
+    <Loading v-if="loading" />
   </div>
 </template>
 
 <!-- eslint-disable -->
 <script>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed } from "vue";
+import { useStore } from "vuex";
+import axios from "@/Utils/axios.config.js";
+import Result from "./Result.vue";
+import Loading from "./Loading.vue";
+
 export default {
+  components: { Result, Loading },
   setup() {
-    const CETCODE = ref([
-      {
-        code: "0101210000",
-        description: "Live Purebred breeding horses",
-      },
-      {
-        code: "0101290000",
-        description: "Live Horses other than pure bred",
-      },
-      {
-        code: "0101301000",
-        description: "Live Purebred breeding asses",
-      },
-      {
-        code: "0101309000",
-        description: "Live Assses other than pure bred",
-      },
-      {
-        code: "0101900000",
-        description: "Live Purebred breeding assess",
-      },
-      {
-        code: "0101210000",
-        description: "Live Bufalo other than pure bred",
-      },
-      {
-        code: "0133340000",
-        description: "Other, containing alkaloids or derivatives thereof",
-      },
-    ]);
+    const store = useStore();
+    const showResult = ref(false);
+    const result = reactive({ details: null });
+    const CETCODE = computed(() => store.state.tariffsList);
+    const loading = ref(false);
     const showCurrency = ref(false);
     const showHscode = ref(false);
     const showHscodeDesc = ref(false);
     const insuranceToggle = ref(false);
     const insuranceType = ref("actual");
-    const selectedCurrency = reactive({ currency_name: "" });
+    const selectedCurrency = reactive({ currency_code: "" });
     const selectedCode = reactive({
       code: "",
       description: "",
     });
-    const Currency = ref([
-      "NGN",
-      "AUD",
-      "AED",
-      "BRL",
-      "CAD",
-      "CHF",
-      "CNY",
-      "CZK",
-      "CFA",
-      "EGP",
-      "USD",
-      "EUR",
-    ]);
+    const Currency = computed(() => store.state.ratesList);
     const item = reactive({
       description: null,
       fob: null,
       freight: null,
       insurance: null,
     });
+    const setShowResult = () => {
+      showResult.value = !showResult.value;
+    };
     const setShowHscode = (state) => {
       if (state === "focus") {
         showHscode.value = true;
@@ -330,10 +311,9 @@ export default {
         showCurrency.value = !showCurrency.value;
       }
     };
-
     const setHscode = (value) => {
-      selectedCode.code = value.code;
-      selectedCode.description = value.description;
+      selectedCode.code = value.hscode;
+      selectedCode.description = value.hs_description;
       if (showHscode.value) {
         showHscode.value = !showHscode.value;
       }
@@ -342,7 +322,7 @@ export default {
       }
     };
     const setCurrency = (value) => {
-      selectedCurrency.currency_name = value;
+      selectedCurrency.currency_code = value.currency_code;
       if (showCurrency.value) {
         showCurrency.value = !showCurrency.value;
       }
@@ -351,43 +331,87 @@ export default {
       insuranceToggle.value = !insuranceToggle.value;
       insuranceType.value = insuranceToggle.value ? "actual" : "percentage";
     };
-
     const filteredCetcode = computed(() =>
-      CETCODE.value.filter((item) =>
+      CETCODE.value.results.filter((item) =>
         selectedCode.description.length > 0
-          ? item.description
+          ? item.hs_description
               .toLowerCase()
               .includes(selectedCode.description.toLowerCase())
-          : item.code.includes(selectedCode.code)
+          : item.hscode.includes(selectedCode.code)
       )
     );
     const filteredCurrency = computed(() =>
-      Currency.value.filter((item) =>
-        item
+      Currency.value.results.filter((item) =>
+        item.currency_code
           .toLowerCase()
-          .includes(selectedCurrency.currency_name.toLowerCase())
+          .includes(selectedCurrency.currency_code.toLowerCase())
       )
     );
+    const calculationsDataWithActualInsurance = reactive({});
+    const calculationsDataWithPercentageInsurance = reactive({});
+    const handleCalculation = () => {
+      const data = {
+        hscode: selectedCode.code,
+        hscode_description: selectedCode.description,
+        item_description: item.description,
+        currency: selectedCurrency.currency_code,
+        fob: item.fob,
+        freight: item.freight,
+      };
+      const calculationsDataWithActualInsurance = {
+        ...data,
+        insurance: item.insurance,
+      };
+      const calculationsDataWithPercentageInsurance = {
+        ...data,
+        insurance_percentage: item.insurance,
+      };
+      loading.value = true;
+      store.dispatch("setLoading", true);
 
-    // watch(filteredCetcode, () => console.log(filteredCetcode.value));
+      axios
+        .post(
+          "/api/v1/calculation/",
+          insuranceType.value == "actual"
+            ? calculationsDataWithActualInsurance
+            : calculationsDataWithPercentageInsurance
+        )
+        .then((response) => {
+          console.log(response.data);
+          result.details = response.data;
+          store.dispatch("setLoading", false);
 
+          loading.value = false;
+          showResult.value = true;
+        })
+        .catch((error) => {
+          loading.value = false;
+        });
+    };
     return {
       showHscode,
       showCurrency,
       showHscodeDesc,
       selectedCode,
       CETCODE,
+      result,
       filteredCetcode,
       filteredCurrency,
       selectedCurrency,
       item,
+      showResult,
       insuranceType,
+      loading,
+      calculationsDataWithActualInsurance,
+      calculationsDataWithPercentageInsurance,
       setShowCurrency,
       handleInsuranceType,
       setShowHscode,
       setShowHscodeDesc,
       setCurrency,
       setHscode,
+      setShowResult,
+      handleCalculation,
     };
   },
 };

@@ -54,7 +54,7 @@ export default createStore({
       state.ratesList = items;
     },
     TARIFF_LIST(state, items) {
-      state.ratesList = items;
+      state.tariffsList = items;
     },
     SET_LOADING(state, loadingState) {
       state.loading = loadingState;

@@ -42,6 +42,7 @@ export default {
     const { loading } = store.state;
     const isLoading = computed(() => loading);
     const tableData = ref(null);
+    
     //Created-Like LifeCycle Component in vue 3
     (async () => {
       store.dispatch("setLoading", true);

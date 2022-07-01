@@ -62,7 +62,11 @@
       <Table_Rate v-if="Tab === 'rate'" :rateData="rateData" />
       <Table_Tariff v-if="Tab === 'tarrif'" :tariffData="tariffData" />
     </div>
-    <Update v-if="updateModal" :handleUpdateModal="handleUpdateModal" />
+    <Update
+      v-if="updateModal"
+      :handleUpdateModal="handleUpdateModal"
+      :currentTab="Tab"
+    />
   </div>
 </template>
 <!-- eslint-disable -->
@@ -99,6 +103,8 @@ export default {
         rateData.value = response2.data;
 
         store.dispatch("setLoading", false);
+        store.dispatch("tariffList", response1.data);
+        store.dispatch("rateList", response2.data);
       } catch (err) {
         store.dispatch("setLoading", false);
         console.log(err);
@@ -139,7 +145,7 @@ export default {
       getTariffUpdatedDate,
       updateModal,
       switchTab,
-      handleUpdateModal
+      handleUpdateModal,
     };
   },
 };
