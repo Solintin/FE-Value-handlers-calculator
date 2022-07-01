@@ -3,7 +3,7 @@
 <template>
   <div class="layout">
     <div class="update_box space-y-8">
-      <h1 class="text-xl font-medium text-center mb-3">Calculation Details</h1>
+      <h1 class="text-xl font-medium text-center mb-3 underline">Calculation Details</h1>
 
       <div class="divide-y-4 capitalize text-lg font-medium">
         <div class="flex justify-between items-center py-4">
@@ -16,24 +16,25 @@
         </div>
         <div class="flex justify-between items-center py-4">
           <div class="">Total import duty payable</div>
-          <div>{{ digitFormatter(result.details.detail.result_NGN) }}</div>
+          <div>{{currency}} {{ digitFormatter(result.details.detail.result_NGN) }}</div>
         </div>
         <div class="flex justify-between items-center py-4">
           <div class="">Sum Total</div>
-          <div>{{ digitFormatter(result.details.detail.total_NGN) }}</div>
+          <div>{{currency}} {{ digitFormatter(result.details.detail.total_NGN) }}</div>
         </div>
       </div>
 
       <div class="flex item-center space-x-10 justify-center py-2">
         <button
           @click="upload"
-          class="bg-green-600 flex justify-center space-x-2 max-w-max rounded-full px-5 py-2 text-base font-medium text-white"
+          class="bg-green-600 flex justify-center items-center space-x-2 max-w-max rounded-md px-5 py-2 text-base font-medium text-white"
         >
           <div>Print Result</div>
+          <i class="fa-solid fa-print text-xl"></i>
         </button>
         <button
           @click="setShowResult"
-          class="flex justify-center max-w-max rounded-full px-5 py-2 text-base font-medium bg-red-600 text-white"
+          class="flex justify-center max-w-max rounded-md px-5 py-2 text-base font-medium bg-red-600 text-white"
         >
           <span>Cancel</span>
         </button>
@@ -55,12 +56,14 @@ import { digitFormatter } from "@/Utils/helper_function";
 const props = defineProps({
   setShowResult: Function,
   result: Object,
+  currency : String
 });
 
 const store = useStore();
 const loading = computed(() => store.state.loading);
 const setShowResult = computed(() => props.setShowResult);
 const result = computed(() => props.result);
+const currency = computed(() => props.currency);
 </script>
 <!-- eslint-disable -->
 

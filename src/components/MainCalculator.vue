@@ -243,7 +243,7 @@
         </button>
       </div>
     </div>
-    <Result v-if="showResult" :setShowResult="setShowResult" :result="result" />
+    <Result v-if="showResult" :setShowResult="setShowResult" :result="result" :currency="selectedCurrency.currency_code" />
     <Loading v-if="loading" />
   </div>
 </template>
